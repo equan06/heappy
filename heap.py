@@ -24,47 +24,52 @@ https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-c
 
 class BinHeap():
 
-    def __init__(self):
-        self.heap = []
-        self.len, self.next_index = 0, 0
-    
-    def find_min(self):
-        if (self.len == 0):
-            raise Error
-        return self.heap[0][1]
+    def __init__(self, input_list = [], sift_down = True):
+        "Assume that input_list is a list of (key, value) tuples. "
+        self.len, self.next_index = len(input_list), len(input_list)
+        self.build_heap(input_list, sift_down)
+
+    def build_heap(self, input_list, sift_down = True):
+        "Build the heap from an unsorted list."
+        self.heap = input_list[:]
+        if sift_down:
+            for i in reversed(range(0, self.len)):
+                self._sift_down(i)
+        else:
+            for i in range(0, self.len):
+                self._sift_up(i)
 
     def insert(self, key, value):
         self.heap.append((key, value))
-        self.sift_up(self.next_index)
+        self._sift_up(self.next_index)
         self.next_index += 1
         self.len += 1
-        print(f"inserted: {(key, value)}")
 
-    def sift_up(self, curr):
+    def _sift_up(self, curr):
         "Sift the element at index curr upwards until the heap property is satisfied for all elements above curr."
-        parent = get_parent(curr)
-        while parent != -1 and curr > 0 and self.heap[curr][0] < self.heap[parent][0]:
-            self.heap[curr], self.heap[parent] = self.heap[parent], self.heap[curr_curr]
-            curr, parent = parent, get_parent(parent)
+        parent = math.floor((curr - 1)/2)
+        while curr > 0 and self.heap[curr][0] < self.heap[parent][0]:
+            self.heap[curr], self.heap[parent] = self.heap[parent], self.heap[curr]
+            curr, parent = parent, math.floor((parent - 1)/2)
 
-    def sift_down(self, curr):
+    def _sift_down(self, curr):
         "Sift the element at index curr downwards until the heap property is satisfied for all elements below curr."
-        min_child = self.get_min_child(curr)
-        while min_child != -1 and curr < self.len and self.heap[curr][0] > self.heap[min_child][0]:
-            self.heap[curr], self.heap[min_child] = self.heap[min_child], self.heap[curr]
-            curr, min_child = min_child, get_min_child(min_child)
-
-    def get_min_child(self, curr):
-        # TODO test if this works?
-        left, right = 2 * curr + 1, 2 * curr + 2
-        if (left >= self.len):
-            return -1
-        return left if right >= self.len or self.heap[left][0] <= self.heap[right][0] else right
-
-    def get_parent(self, curr):
-        if curr == 0:
-            return -1
-        return math.floor((curr - 1) / 2)
+        child = 2*curr + 1
+        while child < self.len:
+            right = child + 1
+            if right < self.len and self.heap[child][0] > self.heap[right][0]:
+                child = right
+            if self.heap[curr][0] < self.heap[child][0]:
+                break
+            self.heap[curr], self.heap[child] = self.heap[child], self.heap[curr]
+            curr, child = child, 2*child + 1
+    
+    def del_min(self):
+        self.next_index -= 1
+        self.len -= 1
+        self.heap[0], self.heap[self.next_index] = self.heap[self.next_index], self.heap[0]
+        self.heap.pop()
+        self._sift_down(0)
         
     def __str__(self):
         res = ""
@@ -73,23 +78,16 @@ class BinHeap():
             if (idx + 2) & (idx + 1) == 0:
                 res += "\n"
         return res
+        
+    def __len__(self):
+        return self.len
     
+    def print_arr(self):
+        print(self.heap)
     
 
     
 if __name__ == "__main__":
-    h = BinHeap()
-    h.insert(5, "A")
-    h.insert(2, "B")
-    h.insert(3, "B")
-    h.insert(4, "c")
-    h.insert(10, "awd")
-    h.insert(11, "awd")
-    h.insert(2, "awd")
-    h.insert(1, "awd")
-    h.insert(3, "awd")
-
-
-
+    h = BinHeap([(5,"a"), (2, "B"), (3, "C"), (4, "d")])
     print(h)
     
