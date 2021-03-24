@@ -1,19 +1,19 @@
-from heap import BinHeap
+from src.heap import binheap
 import random
 import time
 from collections import deque
 
-def test_siftdown_siftup():
+def siftdown_siftup():
     size = 100000
     input = [(random.randint(0, size), i) for i in range(0, size)]
 
 
     start1 = time.time()
-    h1 = BinHeap(input)
+    h1 = binheap(input)
     print(f"siftdown elapsed: {time.time() - start1}")
 
     start2 = time.time()
-    h2 = BinHeap(input, sift_down = False)
+    h2 = binheap(input, sift_down = False)
     print(f"siftup elapsed: {time.time() - start2}")
 
 def add(d, elem):
@@ -32,13 +32,13 @@ def add(d, elem):
         else:
             d.insert(next, elem)
 
-def test_init():
+def simulate():
     size = 1000
     input = [random.randint(0, size) for i in range(0, size)]
 
     s1 = time.time()
     for _ in range(1000):
-        h = BinHeap()
+        h = binheap()
         for idx, i in enumerate(input):
             if idx > size / 2:
                 h.del_min()
@@ -59,5 +59,5 @@ def test_init():
     print(time.time() - s2)
 
 if __name__ == "__main__":
-    # test_siftdown_siftup()
-    test_init()
+    # siftdown_siftup()
+    simulate()

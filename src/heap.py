@@ -22,11 +22,13 @@ https://stackoverflow.com/questions/9755721/how-can-building-a-heap-be-on-time-c
 """
 
 
-class BinHeap():
+class binheap():
 
     def __init__(self, input_list = [], sift_down = True):
         "Assume that input_list is a list of (key, value) tuples. "
         self.len, self.next_index = len(input_list), len(input_list)
+        if len(input_list) > 0 and type(input_list[0]) is int:
+            input_list = [(i, ) for i in input_list]
         self.build_heap(input_list, sift_down)
 
     def build_heap(self, input_list, sift_down = True):
@@ -39,7 +41,7 @@ class BinHeap():
             for i in range(0, self.len):
                 self._sift_up(i)
 
-    def insert(self, key, value):
+    def insert(self, key, value): 
         self.heap.append((key, value))
         self._sift_up(self.next_index)
         self.next_index += 1
@@ -64,13 +66,14 @@ class BinHeap():
             self.heap[curr], self.heap[child] = self.heap[child], self.heap[curr]
             curr, child = child, 2*child + 1
     
-    def del_min(self):
+    def pop(self):
         self.next_index -= 1
         self.len -= 1
         self.heap[0], self.heap[self.next_index] = self.heap[self.next_index], self.heap[0]
-        self.heap.pop()
+        ret = self.heap.pop()
         self._sift_down(0)
-        
+        return ret
+
     def __str__(self):
         res = ""
         for idx, pair in enumerate(self.heap):
@@ -78,16 +81,16 @@ class BinHeap():
             if (idx + 2) & (idx + 1) == 0:
                 res += "\n"
         return res
-        
+
     def __len__(self):
         return self.len
-    
+
     def print_arr(self):
         print(self.heap)
     
 
     
 if __name__ == "__main__":
-    h = BinHeap([(5,"a"), (2, "B"), (3, "C"), (4, "d")])
+    h = binheap([(5,"a"), (2, "B"), (3, "C"), (4, "d")])
     print(h)
     
